@@ -1,0 +1,62 @@
+<%- include('./../../partials/head.ejs')%>
+
+    <div class="container my-5">
+
+        <div class="row justify-content-center">
+
+            <div class="col-md-6">
+
+                <div class="card shadow p-4">
+
+                    <h3 class="text-center mb-4">
+                        Login to your Account
+                    </h3>
+
+                    <form action="/auth/signin" method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">
+                                Email Address
+                            </label>
+
+                            <input type="email" id="email" name="email" placeholder="Enter your email"
+                                class="form-control <%= errors && errors.email ? 'is-invalid' : '' %>" value="<%= formData?.email || '' %>" required >
+                            <div class="invalid-feedback">
+                                <%= errors && errors.email ? errors.email : '' %>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">
+                                Password
+                            </label>
+
+                            <input type="password" id="password" name="password" placeholder="Enter your password"
+                                class="form-control <%= errors && errors.password ? 'is-invalid' : '' %>" value="<%= formData?.password || '' %>" required>
+                            <div class="invalid-feedback">
+                                <%= errors && errors.password ? errors.password : '' %>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            Login Account
+                        </button>
+
+                    </form>
+                    <span style="margin-top: 20px;" class="text-center">Don't have an account?
+                         <a href="/auth/signup"> Create new account</a>
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <%- include('./../../partials/footer.ejs')%>
+
+
+        </body>
+
+        </html>

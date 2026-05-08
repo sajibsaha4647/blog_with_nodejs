@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html , body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        min-height: 900px;
+        background: rgb(245, 245, 245);
+}
+
+footer {
+    min-height: 80px;
+    background: #222222;
+    color: #ffffff;
+    text-align: center;
+}
+
+.my-container{
+      min-height: 900px;
+}
+
+.jumbotron{
+    padding: 2rem;
+    background: #e9ecef;
+    border-radius: 10px;
+}
