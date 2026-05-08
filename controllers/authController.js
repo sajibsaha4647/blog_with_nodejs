@@ -4,15 +4,19 @@ const { validationResult } = require('express-validator')
 const validationErrorFormatter = require('./../utils/validationErrorFormatter')
 
 const signInGetController = (req, res, next) => {
+  console.log('checking here', req.get('Cookie'));
+  let isLogedin = req.get('Cookie')?.split('=')[1] === 'true' ? true : false;
+  if(isLogedin){
+    return res.render("pages/home/index", { title: "Exp Blog" });
+  }
   res.render("pages/auth/signin", { title: "Account Login", errors: {},
-        formData: req.body });
+        formData: req.body,isLogedin: isLogedin });
 };
 
 const signInPostController = async (req, res, next) => {
 
-  
-
   let { email, password } = req.body;
+  let isLogedin = req.get('Cookie')?.split('=')[1] === 'true' ? true : false;
 
     let errors = validationResult(req);
 
@@ -36,7 +40,8 @@ const signInPostController = async (req, res, next) => {
       console.log("Invalid Credential");
 
       return res.render("pages/auth/signin", {
-        title: "Account Login"
+        title: "Account Login",
+         isLogedin: isLogedin
       });
     }
 
@@ -50,14 +55,16 @@ const signInPostController = async (req, res, next) => {
       console.log("Password did not match");
 
       return res.render("pages/auth/signin", {
-        title: "Account Login"
+        title: "Account Login",
+         isLogedin: isLogedin
       });
     }
 
     console.log('User login successfully');
-
+    res.setHeader('Set-Cookie', 'isLogedin=true');
     res.render("pages/home/index", {
-      title: "Exp Blog"
+      title: "Exp Blog",
+      isLogedin: isLogedin
     });
 
   } catch (e) {
@@ -71,9 +78,11 @@ const signInPostController = async (req, res, next) => {
 };
 
 const signUpGetController = (req, res, next) => {
-  res.render("pages/auth/signup", { title: "Create new account" , errors: {},formData: req.body});
+  let isLogedin = req.get('Cookie')?.split('=')[1] === 'true' ? true : false;
+  res.render("pages/auth/signup", { title: "Create new account" , errors: {},formData: req.body, isLogedin: isLogedin});
 };
 const signUpPostController = async(req, res, next) => {
+   let isLogedin = req.get('Cookie')?.split('=')[1] === 'true' ? true : false;
    let { username, email, password } = req.body;
 
    let errors = validationResult(req);
@@ -83,7 +92,8 @@ const signUpPostController = async(req, res, next) => {
       return res.render('pages/auth/signup',{
         title:"Create new account",
         errors: validationErrorFormatter(errors),
-        formData: req.body
+        formData: req.body,
+        isLogedin: isLogedin
       });
        return true;
     }
@@ -107,7 +117,8 @@ const signUpPostController = async(req, res, next) => {
     console.log('User created successfully', createUser);
 
     res.render("pages/auth/signin", {
-      title: "Account Login"
+      title: "Account Login",
+        isLogedin: isLogedin
     });
 
   } catch (e) { 

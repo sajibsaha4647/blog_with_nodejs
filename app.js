@@ -18,12 +18,22 @@ const middleware = [
 ]
 app.use(middleware)
 
+app.use((req, res, next) => {
 
+  let isLogedin =
+    req.get('Cookie')?.split('=')[1] === 'true'
+      ? true
+      : false;
+
+  res.locals.isLogedin = isLogedin;
+
+  next();
+});
 
 app.use('/auth',authRoute)
 app.use('/validator',validatorRoutes)
 app.get('/',(req,res)=>{
-  res.render('pages/home/index', { title:"Exp Blog" })
+  res.render('pages/home/index', { title:"Exp Blog", isLogedin: res.locals.isLogedin })
 })
 
 

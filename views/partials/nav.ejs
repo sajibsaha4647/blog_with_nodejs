@@ -20,17 +20,27 @@
           <a class="nav-link active" href="/">Dashboard</a>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="/auth/signin">Login</a>
-        </li>
+      <% if(!isLogedin){ %>
 
-        <li class="nav-item">
-          <a class="nav-link" href="/auth/signup">Register</a>
-        </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/auth/signin">Login</a>
+      </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="/validator">Playground</a>
-        </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/auth/signup">Register</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/validator">Playground</a>
+      </li>
+
+      <% }  %>
+      <% if(isLogedin){ %>
+      <li class="nav-item">
+        <a class="nav-link" href="/auth/signout">Logout</a>
+      </li>
+      <% }  %>
+
+
 
       </ul>
 
