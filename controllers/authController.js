@@ -4,19 +4,16 @@ const { validationResult } = require('express-validator')
 const validationErrorFormatter = require('./../utils/validationErrorFormatter')
 
 const signInGetController = (req, res, next) => {
-  console.log('checking here', req.get('Cookie'));
-  let isLogedin = req.get('Cookie')?.split('=')[1] === 'true' ? true : false;
-  if(isLogedin){
-    return res.render("pages/home/index", { title: "Exp Blog" });
-  }
+  // console.log('cing heheckre', req.get('Cookie'));
+  console.log('checking here', req.session.user, req.session.isLogedin);
   res.render("pages/auth/signin", { title: "Account Login", errors: {},
-        formData: req.body,isLogedin: isLogedin });
+        formData: req.body });
 };
 
 const signInPostController = async (req, res, next) => {
 
   let { email, password } = req.body;
-  let isLogedin = req.get('Cookie')?.split('=')[1] === 'true' ? true : false;
+ 
 
     let errors = validationResult(req);
 
@@ -41,7 +38,7 @@ const signInPostController = async (req, res, next) => {
 
       return res.render("pages/auth/signin", {
         title: "Account Login",
-         isLogedin: isLogedin
+        
       });
     }
 
@@ -56,16 +53,29 @@ const signInPostController = async (req, res, next) => {
 
       return res.render("pages/auth/signin", {
         title: "Account Login",
-         isLogedin: isLogedin
+        
       });
     }
 
     console.log('User login successfully');
-    res.setHeader('Set-Cookie', 'isLogedin=true');
-    res.render("pages/home/index", {
-      title: "Exp Blog",
-      isLogedin: isLogedin
-    });
+    // res.setHeader('Set-Cookie', 'isLogedin=true');
+    req.session.isLogedin = true;
+
+req.session.user = {
+   id: findUser._id.toString(),
+   userName: findUser.userName,
+   email: findUser.email,
+};
+
+req.session.save((err) => {
+  if (err) {
+    console.log('Error in saving session after login', err);
+    return next(err);
+  } 
+res.redirect('/dashboard');
+});
+
+    
 
   } catch (e) {
 
@@ -78,8 +88,8 @@ const signInPostController = async (req, res, next) => {
 };
 
 const signUpGetController = (req, res, next) => {
-  let isLogedin = req.get('Cookie')?.split('=')[1] === 'true' ? true : false;
-  res.render("pages/auth/signup", { title: "Create new account" , errors: {},formData: req.body, isLogedin: isLogedin});
+ 
+  res.render("pages/auth/signup", { title: "Create new account" , errors: {},formData: req.body,});
 };
 const signUpPostController = async(req, res, next) => {
    let isLogedin = req.get('Cookie')?.split('=')[1] === 'true' ? true : false;
@@ -93,7 +103,7 @@ const signUpPostController = async(req, res, next) => {
         title:"Create new account",
         errors: validationErrorFormatter(errors),
         formData: req.body,
-        isLogedin: isLogedin
+       
       });
        return true;
     }
@@ -118,7 +128,7 @@ const signUpPostController = async(req, res, next) => {
 
     res.render("pages/auth/signin", {
       title: "Account Login",
-        isLogedin: isLogedin
+       
     });
 
   } catch (e) { 
@@ -131,7 +141,18 @@ const signUpPostController = async(req, res, next) => {
  
 };
 
-const logoutController = (req, res, next) => {};
+const logoutController = (req, res, next) => {
+
+  req.session.destroy((err) => {
+    if (err) {
+      console.log('Error in destroying session during logout', err);
+      return next(err);
+    }
+    res.redirect('/auth/signin');
+
+  });
+
+};
 
 module.exports = {
   signInGetController,
